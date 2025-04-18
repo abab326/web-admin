@@ -1,6 +1,5 @@
 #!/bin/sh
 LOG_FILE=".git/hooks/husky.log"
-
 {
   echo "=== 开始执行: $(date) ==="
   echo "当前分支: $(git branch --show-current)"

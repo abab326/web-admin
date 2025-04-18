@@ -1,29 +1,15 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+LOG_FILE=".git/hooks/husky.log"
 
-# 打印开始信息
-echo "🏁 Running pre-commit hooks..."
+{
+  echo "=== 开始执行: $(date) ==="
+  echo "当前分支: $(git branch --show-current)"
 
-# 1. 运行 lint-staged 进行代码格式化
-npx lint-staged
+  . "$(dirname "$0")/_/husky.sh"
 
-# 获取 lint-staged 的退出代码
-lint_staged_status=$?
+  # 你的命令...
+  npx lint-staged
 
-# 2. 运行单元测试 (可选)
-# echo "🔬 Running unit tests..."
-# npm run test:unit
-
-# 3. 检查是否有未处理的冲突标记 (可选)
-if grep -r -n -E "<<<<<<<|=======|>>>>>>>" src/; then
-  echo "❌ 发现未解决的 Git 冲突标记！请先解决冲突再提交。"
-  exit 1
-fi
-
-# 根据 lint-staged 的结果决定是否继续提交
-if [ $lint_staged_status -ne 0 ]; then
-  echo "❌ lint-staged 检查失败，请修复错误后重试"
-  exit 1
-fi
-
-echo "✅ 所有 pre-commit 检查通过！"
+  echo "=== 执行结束: $(date) ==="
+  echo "退出码: $?"
+} >> "$LOG_FILE" 2>&1

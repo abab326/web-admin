@@ -9,7 +9,7 @@
     "lint": "eslint . --ext .vue,.ts,.tsx --fix",
     "format": "prettier --write ./src",
     "preview": "vite preview",
-    "prepare": "husky"
+    "prepare": "husky && husky install"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,vue,scss}": [
@@ -52,7 +52,7 @@
     "eslint-plugin-prettier": "^5.2.6",
     "eslint-plugin-vue": "^10.0.0",
     "globals": "^16.0.0",
-    "husky": "^9.1.7",
+    "husky": "^8.0.0",
     "lint-staged": "^15.5.1",
     "prettier": "^3.5.3",
     "sass": "^1.86.2",

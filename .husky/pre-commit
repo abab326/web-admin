@@ -1,14 +1,9 @@
 #!/bin/sh
-LOG_FILE=".git/hooks/husky.log"
-{
-  echo "=== 开始执行: $(date) ==="
-  echo "当前分支: $(git branch --show-current)"
+# 将输出同时显示在终端和写入日志文件
+exec 1> >(tee -a .husky/husky.log) 2>&1
 
-  . "$(dirname "$0")/_/husky.sh"
+. "$(dirname "$0")/_/husky.sh"
 
-  # 你的命令...
-  npx lint-staged
-
-  echo "=== 执行结束: $(date) ==="
-  echo "退出码: $?"
-} >> "$LOG_FILE" 2>&1
+echo "=== 开始执行 pre-commit 钩子 ==="
+npx lint-staged
+echo "=== 执行结束，退出码: $? ==="

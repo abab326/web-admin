@@ -26,6 +26,10 @@ export default createRouter({
     {
       path: "/table",
       component: () => import("@/views/table-demo/TableDemo.vue")
+    },
+    {
+      path: "/file",
+      component: () => import("@/views/file-demo/FileDemo.vue")
     }
   ]
 });

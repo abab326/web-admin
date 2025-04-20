@@ -8,11 +8,23 @@ import {
   type UploadUserFile
 } from "element-plus";
 import { api } from "v-viewer";
-const props = defineProps<{
-  fileTypes?: string[];
-  maxSize?: number;
-  compressOptions?: Compressor.Options;
-}>();
+const props = withDefaults(
+  defineProps<{
+    fileCardSize?: string | number;
+    fileTypes?: string[];
+    maxSize?: number;
+    compressOptions?: Compressor.Options;
+  }>(),
+  {
+    fileCardSize: "80px",
+    fileTypes: () => ["image/jpeg", "image/png", "image/gif"],
+    maxSize: 10,
+    compressOptions: () => ({
+      quality: 0.8,
+      maxWidth: 1600
+    })
+  }
+);
 
 const fileList = defineModel<UploadUserFile[]>("file-list", { default: [] });
 const beforeUpload = (file: UploadRawFile) => {
@@ -78,7 +90,9 @@ const handleRemove = (file: UploadFile) => {
   <el-upload
     v-model:file-list="fileList"
     class="image-uploader"
-    :style="{ '--file-card-size': fileList.length > 0 ? '100px' : '80px' }"
+    :style="{
+      '--file-card-size': `${fileCardSize}`.endsWith('px') ? fileCardSize : `${fileCardSize}px`
+    }"
     :show-file-list="true"
     :before-upload="beforeUpload"
     :http-request="fileUpload"

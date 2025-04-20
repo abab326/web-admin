@@ -5,7 +5,15 @@ export default createRouter({
   routes: [
     {
       path: "/",
+      redirect: "/login"
+    },
+    {
+      path: "/designer",
       component: () => import("@/views/DesignerPage.vue")
+    },
+    {
+      path: "/login",
+      component: () => import("@/views/login/Login.vue")
     },
     {
       path: "/about",
@@ -14,6 +22,10 @@ export default createRouter({
     {
       path: "/svg",
       component: () => import("@/views/svg-demo/index.vue")
+    },
+    {
+      path: "/table",
+      component: () => import("@/views/table-demo/TableDemo.vue")
     }
   ]
 });

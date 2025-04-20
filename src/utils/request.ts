@@ -18,17 +18,72 @@ const service: AxiosInstance = axios.create({
   timeout: 10000
 });
 
+// 假设 pendingRequests 和 requestQueue 是全局变量，需明确初始化
+const pendingRequests = new Map<string, Promise<InternalAxiosRequestConfig>>();
+const requestQueue: (() => void)[] = [];
+let activeRequests = 0; // 全局变量，需确保线程安全
+// 生成请求标识
+const generateReqKey = (config: InternalAxiosRequestConfig) => {
+  return [
+    config.url,
+    config.method,
+    JSON.stringify(config.params),
+    JSON.stringify(config.data)
+  ].join("&");
+};
+// 请求缓存池中删除请求
+const subPendingRequest = (config: InternalAxiosRequestConfig) => {
+  const requestKey = generateReqKey(config);
+  pendingRequests.delete(requestKey);
+  activeRequests--;
+  processQueue();
+};
+// 执行队列中的请求
+const processQueue = () => {
+  while (activeRequests < 5 && requestQueue.length > 0) {
+    const nextRequest = requestQueue.shift();
+    nextRequest?.();
+  }
+};
+// 生成请求
+const generateRequestPromise = (config: InternalAxiosRequestConfig) => {
+  const requestKey = generateReqKey(config);
+  // 重复请求处理
+  if (pendingRequests.has(requestKey)) {
+    return pendingRequests.get(requestKey)!;
+  }
+  // 创建新的Promise用于队列控制
+  const requestPromise = new Promise<InternalAxiosRequestConfig>(resolve => {
+    const executeRequest = async () => {
+      // 增加线程安全机制
+      activeRequests++;
+      // 添加token等原有逻辑
+      const token = localStorage.getItem("token");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      setTimeout(() => {
+        resolve(config);
+      }, 1000);
+    };
+
+    if (activeRequests >= 5) {
+      requestQueue.push(executeRequest);
+    } else {
+      executeRequest();
+    }
+  });
+  pendingRequests.set(requestKey, requestPromise);
+  return requestPromise;
+};
 // 请求拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // 可以在这里统一添加token等
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+    const requestPromise = generateRequestPromise(config);
+    return requestPromise;
   },
   (error: any) => {
+    console.log("interceptors  request", error);
     return Promise.reject(error);
   }
 );
@@ -36,14 +91,19 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   (response: AxiosResponse) => {
+    console.log("interceptors  response", response);
+    subPendingRequest(response.config);
     if (response.status !== 200) return Promise.reject(response.data);
-    handleGeneralError(response.data.code, response.data.message);
     return response;
   },
   (error: any) => {
+    console.log("interceptors  response error", error);
     const axiosError = error as AxiosError;
-    handleGeneralError(axiosError.status || axiosError?.response?.status);
-    Promise.reject(axiosError.response);
+    subPendingRequest(axiosError.config!);
+    if (!axios.isCancel(error)) {
+      handleGeneralError(axiosError.status || axiosError?.response?.status);
+    }
+    return Promise.reject(axiosError.response);
   }
 );
 
@@ -73,19 +133,28 @@ function handleGeneralError(code?: number, message?: string) {
   return true;
 }
 // 封装统一格式的请求方法
-export function request<T = unknown>(config: AxiosRequestConfig): Promise<[T | null, any]> {
+export function request<T = unknown>(config: AxiosRequestConfig): Promise<[any, T | null]> {
+  config.signal = config.signal || new AbortController().signal;
   return new Promise(resolve => {
     service<ResponseData>(config)
       .then(response => {
+        console.log("request response", response);
         const data = response.data as ResponseData;
-        if (data.code !== 200) {
-          resolve([null, data.message]);
+        if (!data) {
+          resolve([response, null]);
           return;
         }
-        resolve([data.data as T, null]);
+        if (data.code !== 200) {
+          handleGeneralError(data.code, data.message);
+          console.log("request response", data.message || "请求失败");
+          resolve([data.message, null]);
+          return;
+        }
+        resolve([null, data.data as T]);
       })
       .catch((error: any) => {
-        return resolve([null, error]);
+        console.log("request catch", error);
+        return resolve([error, null]);
       });
   });
 }

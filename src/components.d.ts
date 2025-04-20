@@ -9,6 +9,8 @@ export {};
 declare module 'vue' {
   export interface GlobalComponents {
     Designer: typeof import('./components/designer/Designer.vue')['default']
+    ImageUploader: typeof import('./components/ImageUploader.vue')['default']
+    QRCode: typeof import('./components/QRCode.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SvgIcon: typeof import('./components/svg-icon/SvgIcon.vue')['default']

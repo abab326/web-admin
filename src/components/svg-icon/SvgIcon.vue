@@ -1,4 +1,7 @@
 <script lang="tsx">
+import type { PropType } from "vue";
+
+type IconType = "element" | "local" | "network";
 export default defineComponent({
   name: "SvgIcon",
   props: {
@@ -7,7 +10,7 @@ export default defineComponent({
       required: true
     },
     type: {
-      type: String,
+      type: String as PropType<IconType>,
       default: "element",
       validator: (value: string) => ["element", "local", "network"].includes(value)
     },
@@ -17,7 +20,7 @@ export default defineComponent({
     },
     color: {
       type: String,
-      default: "currentColor"
+      default: "#666"
     }
   },
 

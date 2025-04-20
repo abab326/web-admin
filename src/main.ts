@@ -1,5 +1,6 @@
 import { createApp } from "vue";
-
+import Viewer from "v-viewer";
+import "viewerjs/dist/viewer.css";
 import ElementPlus from "element-plus";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import "element-plus/dist/index.css";
@@ -29,4 +30,9 @@ app.use(router);
 app.use(ElementPlus, { locale: zhCn });
 app.use(directives);
 
+// 注册图片预览组件
+app.use(Viewer);
+/**
+ * 挂载应用
+ */
 app.mount("#app");

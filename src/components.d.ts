@@ -13,6 +13,7 @@ declare module 'vue' {
     QRCode: typeof import('./components/QRCode.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchForm: typeof import('./components/SearchForm.vue')['default']
     SvgIcon: typeof import('./components/svg-icon/SvgIcon.vue')['default']
   }
 }

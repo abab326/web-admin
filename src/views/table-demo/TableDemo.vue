@@ -1,4 +1,25 @@
 <script setup lang="ts">
+import { useElementSize } from "@vueuse/core";
+import { type FormItem } from "@/components/SearchForm.vue";
+const tableContainerRef = useTemplateRef("tableContainerRef");
+const { height } = useElementSize(tableContainerRef);
+
+const searchForm = ref({});
+const formItems = ref<FormItem[]>([
+  { label: "姓名", prop: "name", component: "input" },
+  { label: "年龄", prop: "age", component: "input" },
+  {
+    label: "性别",
+    prop: "gender",
+    component: "select",
+    options: [
+      { label: "男", value: "男" },
+      { label: "女", value: "女" }
+    ]
+  },
+  { label: "邮箱", prop: "email", component: "input" },
+  { label: "邮箱", prop: "email", component: "input" }
+]);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const tableData = ref<{ id: number; name: string; age: number; gender: string; email: string }[]>(
@@ -8,6 +29,13 @@ let currentRequest: Promise<void> | null = null;
 onMounted(() => {
   handlePaginationChange();
 });
+
+const handleSearch = () => {
+  console.log("searchForm", searchForm.value);
+};
+const handleReset = () => {
+  console.log("handleReset", searchForm.value);
+};
 const generateData = (current: number, size: number) => {
   const data = [];
   for (let i = 1; i <= size; i++) {
@@ -42,21 +70,39 @@ const handlePaginationChange = async () => {
 </script>
 
 <template>
-  <div>
-    <el-table :data="tableData">
-      <el-table-column label="ID" prop="id"></el-table-column>
-      <el-table-column label="姓名" prop="name"></el-table-column>
-      <el-table-column label="年龄" prop="age"></el-table-column>
-      <el-table-column label="性别" prop="gender"></el-table-column>
-      <el-table-column label="邮箱" prop="email"></el-table-column>
-    </el-table>
-    <el-pagination
-      v-model:current-page="currentPage"
-      v-model:page-size="pageSize"
-      :page-count="10"
-      @change="handlePaginationChange"
+  <div class="p-3 flex flex-col h-screen relative">
+    <SearchForm
+      v-model="searchForm"
+      :form-items="formItems"
+      :options="{ size: 'default', labelWidth: '80px' }"
+      @search="handleSearch"
+      @reset="handleReset"
     />
+
+    <div ref="tableContainerRef" class="flex-1 overflow-hidden">
+      <div>
+        <el-table
+          :data="tableData"
+          :max-height="height - 44"
+          border
+          header-row-class-name="table-header-row"
+        >
+          <el-table-column label="ID" prop="id"></el-table-column>
+          <el-table-column label="姓名" prop="name"></el-table-column>
+          <el-table-column label="年龄" prop="age"></el-table-column>
+          <el-table-column label="性别" prop="gender"></el-table-column>
+          <el-table-column label="邮箱" prop="email"></el-table-column>
+        </el-table>
+        <div class="mt-3 flex justify-end">
+          <el-pagination
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
+            :page-count="10"
+            layout="total, sizes, prev, pager, next, jumper"
+            @change="handlePaginationChange"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
-
-<style scoped></style>

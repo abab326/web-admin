@@ -1,4 +1,8 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineOptions({
+  name: "SvgDemo"
+});
+</script>
 
 <template>
   <div class="flex justify-center">
@@ -16,4 +20,3 @@
 </template>
 
 <style scoped></style>
-s

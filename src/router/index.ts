@@ -1,35 +1,24 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { constantsRoutes } from "./constant";
 
-export default createRouter({
+import { useGlobalStateStore } from "@/store/global-state";
+const router = createRouter({
   history: createWebHistory(),
-  routes: [
-    {
-      path: "/",
-      redirect: "/login"
-    },
-    {
-      path: "/designer",
-      component: () => import("@/views/DesignerPage.vue")
-    },
-    {
-      path: "/login",
-      component: () => import("@/views/login/Login.vue")
-    },
-    {
-      path: "/about",
-      component: () => import("@/views/About.vue")
-    },
-    {
-      path: "/svg",
-      component: () => import("@/views/svg-demo/index.vue")
-    },
-    {
-      path: "/table",
-      component: () => import("@/views/table-demo/TableDemo.vue")
-    },
-    {
-      path: "/file",
-      component: () => import("@/views/file-demo/FileDemo.vue")
-    }
-  ]
+  routes: [...constantsRoutes]
 });
+
+router.beforeEach((to, from, next) => {
+  const globalStateStore = useGlobalStateStore();
+  if (globalStateStore.menuList.length === 0) {
+    globalStateStore.getNetMenuList();
+    const routes = globalStateStore.generateRoutesList();
+    // 动态添加路由
+    routes.forEach(route => {
+      router.addRoute(route);
+    });
+    next({ path: to.path });
+    return;
+  }
+  next();
+});
+export default router;

@@ -11,7 +11,9 @@ export const constantComponents: ComponentSchema[] = [
       default: "按钮"
     },
     events: {
-      click: `() => { alert("按钮被点击了");}`
+      onClick: () => {
+        console.log("Click 1====");
+      }
     }
   },
   {
@@ -24,7 +26,7 @@ export const constantComponents: ComponentSchema[] = [
       clearable: true
     },
     events: {
-      change: (value: string) => {
+      onChange: (value: string) => {
         console.log("Change 1====", value);
       }
     }

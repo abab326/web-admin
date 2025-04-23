@@ -1,7 +1,6 @@
 <script lang="tsx">
 import type { ComponentSchema } from "@/types/designer";
 import { type PropType } from "vue";
-
 export default defineComponent({
   name: "CanvasItem",
   props: {
@@ -11,23 +10,13 @@ export default defineComponent({
     }
   },
   emits: ["item-event"],
-  setup({ componentOptions }, { emit }) {
-    const formData = inject<{ [key: string]: any }>("formData", {});
+  setup({ componentOptions }) {
+    const formData = inject<Record<string, any>>("formData", {});
+    const evnets: Record<string, any> = {};
     // 处理自定义事件
     if (componentOptions.events) {
       for (const key in componentOptions.events) {
-        const eventValue = componentOptions.events[key];
-        const eventFun = (...args: any[]) => {
-          if (typeof eventValue === "function") {
-            eventValue(...args);
-          }
-          if (typeof eventValue === "string") {
-            const fun = new Function(eventValue);
-            fun(...args);
-          }
-          emit("item-event", { key, args });
-        };
-        componentOptions.props![key] = eventFun;
+        evnets[key] = componentOptions.events![key];
       }
     }
     // 处理slots
@@ -38,26 +27,22 @@ export default defineComponent({
         slots[key] = typeof slotValue === "function" ? slotValue : () => slotValue;
       }
     }
-    // 动态加载组件
-    let resolveNode: any = "div";
-    try {
-      resolveNode = resolveComponent(componentOptions.type);
-    } catch (e) {
-      console.log(e);
-      resolveNode = componentOptions.type;
-    }
     //处理 modelvalue 事件
     const handleModelValue = (value: any) => {
-      console.log("onUpdate:modelValue", value);
+      console.log("handleModelValue", value);
       if (componentOptions.modelKey) {
-        formData.value[componentOptions.modelKey] = value;
+        // 由于 formData 类型未知，这里假设 formData 是一个 Ref 对象，并且其值是一个对象
+        if (componentOptions.modelKey) {
+          formData.value[componentOptions.modelKey] = value;
+        }
       }
     };
     return () =>
       h(
-        resolveNode,
+        resolveComponent(componentOptions.type),
         {
           ...componentOptions.props,
+          ...evnets,
           ...(componentOptions.modelKey
             ? {
                 modelValue: formData.value[componentOptions.modelKey],

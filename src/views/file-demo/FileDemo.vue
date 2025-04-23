@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+defineOptions({
+  name: "FileDemo"
+});
 const fileList = ref<any[]>([]);
 const getFileList = () => {
   console.log("getFileList", fileList.value);

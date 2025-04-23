@@ -9,23 +9,35 @@ const { componentList } = storeToRefs(store);
 
 const formData = ref<Record<string, any>>({});
 provide("formData", formData);
-const getData = () => {
-  console.log("formData", formData.value);
+
+const handleAdd = (event: any) => {
+  const { item } = event;
+  const { _underlying_vm_ } = item;
+  if (_underlying_vm_) {
+    store.setSelectedComponent(_underlying_vm_.id);
+  }
+};
+const handleItemClick = (element: any) => {
+  store.setSelectedComponent(element.id);
 };
 </script>
 
 <template>
   <div class="p-4 bg-gray-100 h-full">
-    <el-button @click="getData">获取数据</el-button>
     <draggable
       v-model="componentList"
       class="gap-1 grid grid-cols-24 w-full overflow-y-auto"
       :class="{ 'h-full': componentList.length <= 0 }"
       :group="{ name: 'designer', pull: true, put: true }"
       item-key="id"
+      @add="handleAdd"
     >
       <template #item="{ element }">
-        <div :style="{ '--col-span': 12 }" class="col-span-[var(--col-span)]">
+        <div
+          :style="{ '--col-span': 12 }"
+          class="col-span-[var(--col-span)]"
+          @click="handleItemClick(element)"
+        >
           <CanvasItem :component-options="element" />
         </div>
       </template>

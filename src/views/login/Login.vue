@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ElMessage } from "element-plus";
-import { globalApi } from "@/api";
+
+const router = useRouter();
 const activeName = ref("account");
 const accountForm = reactive({
   username: "",
@@ -12,10 +13,10 @@ const phoneForm = reactive({
   code: ""
 });
 
-const handleAccountLogin = (index: number) => {
-  globalApi.userApi.getUserInfo().then(res => {
-    console.log("handleAccountLogin", index, res);
-  });
+const handleAccountLogin = () => {
+  // 处理账号密码登录逻辑
+  ElMessage.success("登录成功");
+  router.push("/main/designer");
 };
 
 const handlePhoneLogin = () => {
@@ -72,13 +73,8 @@ const getSmsCode = () => {
                   />
                 </el-form-item>
                 <el-form-item>
-                  <el-button class="w-full" type="primary" @click="handleAccountLogin(11)">
-                    登录1
-                  </el-button>
-                </el-form-item>
-                <el-form-item>
-                  <el-button class="w-full" type="primary" @click="handleAccountLogin(22)">
-                    登录2
+                  <el-button class="w-full" type="primary" @click="handleAccountLogin">
+                    登录
                   </el-button>
                 </el-form-item>
               </el-form>

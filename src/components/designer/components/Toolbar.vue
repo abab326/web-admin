@@ -17,9 +17,9 @@ const handleRedo = () => {
 <template>
   <div class="toolbar">
     <div class="left-group">
-      <el-button @click="handleSave">保存</el-button>
-      <el-button @click="handleUndo">撤销</el-button>
-      <el-button @click="handleRedo">重做</el-button>
+      <el-button type="primary" @click="handleSave">保存</el-button>
+      <el-button type="primary" @click="handleUndo">撤销</el-button>
+      <el-button type="primary" @click="handleRedo">重做</el-button>
     </div>
   </div>
 </template>

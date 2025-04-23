@@ -25,9 +25,18 @@ const handlePropChange = (key: string, value: any) => {
 <template>
   <div class="w-61">
     <el-form v-if="currentComponent" :model="formModel" label-width="80px">
-      <template v-for="(value, key) in currentComponent.props" :key="key">
-        <el-form-item :label="key">
-          <el-input v-model="formModel[key]" @change="handlePropChange(key, $event)" />
+      <template v-for="(item, key) in currentComponent.props" :key="key">
+        <el-form-item :label="key + ''">
+          <el-switch
+            v-if="typeof item === 'boolean'"
+            v-model="formModel[key]"
+            @change="handlePropChange(key as string, $event)"
+          />
+          <el-input
+            v-else
+            v-model="formModel[key]"
+            @change="handlePropChange(key as string, $event)"
+          />
         </el-form-item>
       </template>
     </el-form>

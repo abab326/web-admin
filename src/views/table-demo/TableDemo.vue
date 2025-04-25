@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { useElementSize } from "@vueuse/core";
 import { type FormItem } from "@/components/SearchForm.vue";
+import { useSafeFunctionExecutor } from "@/composables/useSafeFunctionExecutor";
+
+const safeFunctionExecutor = useSafeFunctionExecutor();
 const tableContainerRef = useTemplateRef("tableContainerRef");
 const { height } = useElementSize(tableContainerRef);
 
@@ -31,7 +34,7 @@ onMounted(() => {
 });
 
 const handleSearch = () => {
-  console.log("searchForm", searchForm.value);
+  validateInput("测试动态执行", "第二个参数");
 };
 const handleReset = () => {
   console.log("handleReset", searchForm.value);
@@ -67,6 +70,19 @@ const handlePaginationChange = async () => {
   currentRequest = request;
   await request;
 };
+// 直接执行代码
+const validateInput = (value: string, value2: string) =>
+  safeFunctionExecutor.execute(
+    `function(context,value,value2,...args){
+        if (!value) throw new Error('值不能为空');
+        console.log('执行成功', value);
+        console.log('执行成功2', value2);
+        console.log('执行成功3', args);
+        return value.trim();
+      }`,
+    value,
+    value2
+  );
 </script>
 
 <template>
@@ -87,11 +103,11 @@ const handlePaginationChange = async () => {
           border
           header-row-class-name="table-header-row"
         >
-          <el-table-column label="ID" prop="id"></el-table-column>
-          <el-table-column label="姓名" prop="name"></el-table-column>
-          <el-table-column label="年龄" prop="age"></el-table-column>
-          <el-table-column label="性别" prop="gender"></el-table-column>
-          <el-table-column label="邮箱" prop="email"></el-table-column>
+          <el-table-column label="ID" prop="id" width="65"></el-table-column>
+          <el-table-column label="姓名" prop="name" min-width="165"></el-table-column>
+          <el-table-column label="年龄" prop="age" width="65"></el-table-column>
+          <el-table-column label="性别" prop="gender" width="65"></el-table-column>
+          <el-table-column label="邮箱" prop="email" width="165"></el-table-column>
         </el-table>
         <div class="mt-3 flex justify-end">
           <el-pagination

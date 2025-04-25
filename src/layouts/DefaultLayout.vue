@@ -7,7 +7,7 @@ import Header from "./components/Header.vue";
   <div class="layout-container flex h-screen w-full">
     <!-- 左侧菜单 -->
     <SideMenu />
-    <div class="flex flex-1 flex-col">
+    <div class="flex flex-1 flex-col overflow-hidden">
       <!-- 顶部功能栏 -->
       <Header />
       <!-- 主内容区 -->

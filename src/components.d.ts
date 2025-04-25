@@ -8,6 +8,7 @@ export {};
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    BpmnEditor: typeof import('./components/BpmnEditor.vue')['default']
     Designer: typeof import('./components/designer/Designer.vue')['default']
     ImageUploader: typeof import('./components/ImageUploader.vue')['default']
     QRCode: typeof import('./components/QRCode.vue')['default']

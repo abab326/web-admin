@@ -10,6 +10,7 @@ import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import { createSvgIconsPlugin, type ViteSvgIconsPlugin } from "vite-plugin-svg-icons";
 import Unocss from "unocss/vite";
 import viteCompression from "vite-plugin-compression";
+import { viteMockServe } from "vite-plugin-mock";
 
 const svgoOptions: ViteSvgIconsPlugin["svgoOptions"] = {
   plugins: [
@@ -67,6 +68,11 @@ const vitePlugins: PluginOption[] = [
     symbolId: "icon-[name]",
     // 自定义 SVG 处理
     svgoOptions: svgoOptions
+  }),
+  // mock
+  viteMockServe({
+    mockPath: "mock",
+    logger: true // 控制台显示请求日志
   }),
   // 原子化CSS
   Unocss({

@@ -14,7 +14,7 @@ interface ResponseData<T = unknown> {
 }
 
 const service: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 10000
 });
 

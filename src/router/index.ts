@@ -7,10 +7,10 @@ const router = createRouter({
   routes: [...constantsRoutes]
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const globalStateStore = useGlobalStateStore();
   if (globalStateStore.menuList.length === 0) {
-    globalStateStore.getNetMenuList();
+    await globalStateStore.getNetMenuList();
     const routes = globalStateStore.generateRoutesList();
     // 动态添加路由
     routes.forEach(route => {

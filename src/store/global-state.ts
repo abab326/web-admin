@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from "vue-router";
 import pathe from "pathe";
 import type { NetworkMenu } from "@/types/menu";
+import { globalApi } from "@/api";
 import { arrayToTree } from "@/utils/array-to-tree";
 
 const pageModules = import.meta.glob(["@/views/**/*.vue", "@/views/**/component/**/*.vue"]);
@@ -63,64 +64,13 @@ export const useGlobalStateStore = defineStore("globalState", () => {
    * icon（图标名称，通常用于左侧菜单的图标展示）、show（是否显示该菜单项）、component（对应的组件名称）和
    * children（子菜单项列表，这里初始化为空数组，表示没有子菜单）
    */
-  function getNetMenuList() {
-    networkMenuList.value = [
-      {
-        id: 1,
-        parentId: 0,
-        name: "首页",
-        path: "/main",
-        icon: "HomeOutlined",
-        show: true,
-        component: "layout"
-      },
-      {
-        id: 2,
-        parentId: 1,
-        name: "页面设计",
-        path: "designer",
-        icon: "InfoCircleOutlined",
-        show: true,
-        component: "DesignerPage"
-      },
-      {
-        id: 3,
-        parentId: 1,
-        name: "关于",
-        path: "about",
-        icon: "InfoCircleOutlined",
-        show: true,
-        component: "About"
-      },
-      {
-        id: 4,
-        parentId: 1,
-        name: "svg",
-        path: "svg",
-        icon: "InfoCircleOutlined",
-        show: true,
-        component: "/svg-demo/index"
-      },
-      {
-        id: 5,
-        parentId: 1,
-        name: "table",
-        path: "table",
-        icon: "InfoCircleOutlined",
-        show: true,
-        component: "/table-demo/TableDemo"
-      },
-      {
-        id: 6,
-        parentId: 1,
-        name: "file",
-        path: "file",
-        icon: "InfoCircleOutlined",
-        show: true,
-        component: "/file-demo/FileDemo"
-      }
-    ];
-    menuList.value = generateMenuList(networkMenuList.value);
+  async function getNetMenuList() {
+    const [error, result] = await globalApi.systemApi.getSystemMenu();
+    if (!error && result) {
+      console.log("result", result);
+      networkMenuList.value = result;
+      menuList.value = generateMenuList(networkMenuList.value);
+    }
   }
   /**
    * 生成菜单列表

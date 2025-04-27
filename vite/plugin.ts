@@ -11,6 +11,7 @@ import { createSvgIconsPlugin, type ViteSvgIconsPlugin } from "vite-plugin-svg-i
 import Unocss from "unocss/vite";
 import viteCompression from "vite-plugin-compression";
 import { viteMockServe } from "vite-plugin-mock";
+import versionUpdatePlugin from "./version-plugin";
 
 const svgoOptions: ViteSvgIconsPlugin["svgoOptions"] = {
   plugins: [
@@ -43,6 +44,8 @@ const vitePlugins: PluginOption[] = [
   vue(),
   // 支持 Vue JSX 语法
   vueJsx(),
+  // 版本更更新
+  versionUpdatePlugin(),
   // 自动导入 Composition API
   AutoImport({
     imports: ["vue", "vue-router", "pinia"],

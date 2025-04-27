@@ -9,6 +9,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const globalStateStore = useGlobalStateStore();
+  globalStateStore.addTagTabsList(to);
   if (globalStateStore.menuList.length === 0) {
     await globalStateStore.getNetMenuList();
     const routes = globalStateStore.generateRoutesList();

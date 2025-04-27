@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SideMenu from "./components/SideMenu.vue";
 import Header from "./components/Header.vue";
+import NavTab from "./components/NavTab.vue";
 </script>
 
 <template>
@@ -12,11 +13,8 @@ import Header from "./components/Header.vue";
       <Header />
       <!-- 主内容区 -->
       <main class="flex flex-1 flex-col overflow-hidden">
-        <!-- 页面标题 -->
-        <div class="px-4 py-2 bg-gray-100 flex items-center justify-between">
-          <h1 class="text-lg font-semibold">页面标题</h1>
-          <!-- 这里可以添加额外的功能按钮 -->
-        </div>
+        <!-- 导航标签页 -->
+        <NavTab />
         <!-- 主要内容 -->
         <div class="flex-1 relative">
           <router-view />

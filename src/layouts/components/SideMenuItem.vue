@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { NetworkMenu } from "@/types/menu";
 import * as path from "pathe";
-
 const props = defineProps<{
   menuItem: NetworkMenu;
   basePath: string;

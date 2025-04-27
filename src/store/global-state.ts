@@ -1,4 +1,4 @@
-import type { RouteRecordRaw } from "vue-router";
+import type { RouteRecordRaw, RouteLocationNormalizedGeneric } from "vue-router";
 import pathe from "pathe";
 import type { NetworkMenu } from "@/types/menu";
 import { globalApi } from "@/api";
@@ -47,7 +47,17 @@ export const useGlobalStateStore = defineStore("globalState", () => {
   // 前端处理后的面包屑列表
   const breadcrumbList = ref([]);
   // 前端处理后的标签页列表
-  const tagTabsList = ref([]);
+  const tabsList = ref<RouteLocationNormalizedGeneric[]>([]);
+  // 当前激活的标签页
+  const activeTab = ref("");
+
+  /**
+   * 设置当前激活的标签页
+   * @param tabName - 标签页名称
+   */
+  function setActiveTab(tabName: string) {
+    activeTab.value = tabName;
+  }
   /**
    * 切换菜单展开收起
    * 该函数用于切换菜单的展开和收起状态。
@@ -67,7 +77,6 @@ export const useGlobalStateStore = defineStore("globalState", () => {
   async function getNetMenuList() {
     const [error, result] = await globalApi.systemApi.getSystemMenu();
     if (!error && result) {
-      console.log("result", result);
       networkMenuList.value = result;
       menuList.value = generateMenuList(networkMenuList.value);
     }
@@ -108,6 +117,40 @@ export const useGlobalStateStore = defineStore("globalState", () => {
     }
     return routesList;
   }
+  /**
+   * 添加标签页
+   * @param tab - 标签页对象，包含name和path属性
+   */
+  function addTagTabsList(tab: RouteLocationNormalizedGeneric) {
+    if (!tabsList.value.some(t => t.path === tab.path)) {
+      tabsList.value.push(tab);
+    }
+    setActiveTab(tab.path);
+  }
+
+  /**
+   * 移除标签页
+   * @param path - 要移除的标签页路径
+   */
+  function removeTagTabsList(path: string) {
+    tabsList.value = tabsList.value.filter(tab => tab.path !== path);
+  }
+
+  /**
+   * 清空标签页列表
+   * @param start - 开始索引（可选）
+   * @param end - 结束索引（可选）
+   */
+  function clearTagTabsList(start?: number, end?: number) {
+    if (start !== undefined && end !== undefined) {
+      tabsList.value.splice(start, end - start);
+    } else if (start !== undefined) {
+      tabsList.value.splice(start);
+    } else {
+      tabsList.value = [];
+    }
+  }
+
   return {
     menuCollapsed,
     toggleMenuCollapsed,
@@ -117,6 +160,11 @@ export const useGlobalStateStore = defineStore("globalState", () => {
     generateRoutesList,
     menuList,
     breadcrumbList,
-    tagTabsList
+    tabsList,
+    activeTab,
+    setActiveTab,
+    addTagTabsList,
+    removeTagTabsList,
+    clearTagTabsList
   };
 });

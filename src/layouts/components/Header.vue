@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useGlobalStateStore } from "@/store/global-state";
+import packageJson from "../../../package.json";
+
 const globalStateStore = useGlobalStateStore();
-// 这里可以添加组件逻辑
+const appVersion = packageJson.version;
 </script>
 
 <template>
@@ -20,6 +22,9 @@ const globalStateStore = useGlobalStateStore();
       <!-- 设置图标 -->
 
       <el-icon :size="20"><setting /></el-icon>
+
+      <!-- 版本号 -->
+      <div class="text-sm text-gray-500 mr-4">v{{ appVersion }}</div>
 
       <!-- 用户信息 -->
       <el-dropdown>

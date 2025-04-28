@@ -1,9 +1,8 @@
-import { Plugin } from "vite";
 import fs from "fs";
 import path from "path";
 import semver from "semver";
 
-export default function versionUpdatePlugin(): Plugin {
+export default function versionUpdatePlugin() {
   return {
     name: "vite-plugin-version-update",
     apply: "build",

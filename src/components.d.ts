@@ -11,7 +11,6 @@ declare module 'vue' {
     BpmnEditor: typeof import('./components/BpmnEditor.vue')['default']
     Designer: typeof import('./components/designer/Designer.vue')['default']
     ImageUploader: typeof import('./components/ImageUploader.vue')['default']
-    QRCode: typeof import('./components/QRCode.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchForm: typeof import('./components/SearchForm.vue')['default']
